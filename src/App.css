@@ -206,6 +206,20 @@ body {
   transform: scale(1.08);
 }
 
+.caption-word.emphasized {
+  color: #5ee9ff;
+}
+
+.caption-word.emphasized.highlight {
+  color: #ffe14d;
+}
+
+.caption-emoji {
+  margin-left: 0.15em;
+  font-size: 0.85em;
+  text-transform: none;
+}
+
 .status-msg {
   color: #8a8d98;
   font-size: 0.85rem;

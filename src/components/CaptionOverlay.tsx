@@ -1,5 +1,6 @@
 import { useMemo } from 'react'
 import type { TranscriptSegment } from '../api/client'
+import { emojiFor, isEmphasized } from '../utils/captionStyle'
 
 interface CaptionOverlayProps {
   segments: TranscriptSegment[]
@@ -31,14 +32,19 @@ export default function CaptionOverlay({ segments, currentTime }: CaptionOverlay
   return (
     <div className="caption-overlay">
       <p className="caption-text">
-        {words.map((word, index) => (
-          <span
-            key={`${word}-${index}`}
-            className={index === highlightIndex ? 'caption-word highlight' : 'caption-word'}
-          >
-            {word.toUpperCase()}
-          </span>
-        ))}
+        {words.map((word, index) => {
+          const classes = ['caption-word']
+          if (index === highlightIndex) classes.push('highlight')
+          if (isEmphasized(word)) classes.push('emphasized')
+          const emoji = emojiFor(word)
+
+          return (
+            <span key={`${word}-${index}`} className={classes.join(' ')}>
+              {word.toUpperCase()}
+              {emoji && <span className="caption-emoji">{emoji}</span>}
+            </span>
+          )
+        })}
       </p>
     </div>
   )
