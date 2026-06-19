@@ -145,6 +145,26 @@ body {
   font-size: 0.9rem;
 }
 
+.audio-stage {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1.5rem;
+  background: radial-gradient(circle at 50% 35%, #1b1e3a, #0b0c10 70%);
+}
+
+.audio-art {
+  font-size: 3.5rem;
+  filter: drop-shadow(0 0 24px rgba(99, 102, 241, 0.6));
+}
+
+.audio-preview {
+  width: 80%;
+}
+
 .video-overlay-status {
   position: absolute;
   inset: 0;
@@ -228,6 +248,81 @@ body {
 
 .status-msg.error {
   color: #ff6b6b;
+}
+
+.track-timeline {
+  position: relative;
+  background: #111319;
+  border: 1px solid #1f2128;
+  border-radius: 12px;
+  padding: 0.75rem 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.track-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  cursor: pointer;
+}
+
+.track-label {
+  width: 90px;
+  flex-shrink: 0;
+  font-size: 0.75rem;
+  color: #8a8d98;
+  white-space: nowrap;
+}
+
+.track-lane {
+  position: relative;
+  flex: 1;
+  height: 32px;
+  background: #0b0c10;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.media-lane .media-clip {
+  position: absolute;
+  inset: 3px;
+  border-radius: 4px;
+  background: linear-gradient(90deg, #2a2f6b, #4338ca);
+  background-image:
+    repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.08) 0 1px, transparent 1px 6px),
+    linear-gradient(90deg, #2a2f6b, #4338ca);
+}
+
+.subtitle-lane {
+  background: #15171f;
+}
+
+.subtitle-clip {
+  position: absolute;
+  top: 4px;
+  bottom: 4px;
+  border-radius: 4px;
+  background: #f59e0b;
+  opacity: 0.75;
+  min-width: 3px;
+}
+
+.subtitle-clip.active {
+  background: #ffe14d;
+  opacity: 1;
+  box-shadow: 0 0 8px rgba(255, 225, 77, 0.6);
+}
+
+.track-playhead {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: #ff4d6d;
+  left: 106px;
+  pointer-events: none;
 }
 
 .subtitle-panel {

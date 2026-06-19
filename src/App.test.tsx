@@ -6,7 +6,11 @@ import * as api from './api/client'
 
 describe('App', () => {
   it('uploads a video, transcribes it, and shows the detected speech', async () => {
-    vi.spyOn(api, 'uploadVideo').mockResolvedValue({ video_id: 'vid123', filename: 'vid123.mp4' })
+    vi.spyOn(api, 'uploadVideo').mockResolvedValue({
+      video_id: 'vid123',
+      filename: 'vid123.mp4',
+      is_audio: false,
+    })
     vi.spyOn(api, 'transcribeVideo').mockResolvedValue({
       video_id: 'vid123',
       language: 'es',

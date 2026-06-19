@@ -4,16 +4,19 @@ import { transcribeVideo, uploadVideo, videoFileUrl } from './api/client'
 import type { TranscriptSegment } from './api/client'
 import SubtitleTimeline from './components/SubtitleTimeline'
 import CaptionOverlay from './components/CaptionOverlay'
+import TrackTimeline from './components/TrackTimeline'
 
 type Status = 'idle' | 'uploading' | 'transcribing' | 'ready' | 'error'
 
 function App() {
   const [videoId, setVideoId] = useState<string | null>(null)
+  const [isAudio, setIsAudio] = useState(false)
   const [segments, setSegments] = useState<TranscriptSegment[]>([])
   const [status, setStatus] = useState<Status>('idle')
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
   const [currentTime, setCurrentTime] = useState(0)
-  const videoRef = useRef<HTMLVideoElement>(null)
+  const [duration, setDuration] = useState(0)
+  const mediaRef = useRef<HTMLVideoElement | HTMLAudioElement>(null)
 
   async function handleFileChange(event: React.ChangeEvent<HTMLInputElement>) {
     const file = event.target.files?.[0]
@@ -26,6 +29,7 @@ function App() {
     try {
       const upload = await uploadVideo(file)
       setVideoId(upload.video_id)
+      setIsAudio(upload.is_audio)
       setStatus('transcribing')
 
       const transcript = await transcribeVideo(upload.video_id)
@@ -38,9 +42,9 @@ function App() {
   }
 
   function handleSeek(time: number) {
-    if (videoRef.current) {
-      videoRef.current.currentTime = time
-      videoRef.current.play()
+    if (mediaRef.current) {
+      mediaRef.current.currentTime = time
+      mediaRef.current.play()
     }
   }
 
@@ -60,8 +64,14 @@ function App() {
         <label className={`upload-button ${isBusy ? 'is-disabled' : ''}`}>
           {status === 'uploading' && 'Subiendo...'}
           {status === 'transcribing' && 'Transcribiendo...'}
-          {(status === 'idle' || status === 'ready' || status === 'error') && '+ Subir video'}
-          <input type="file" accept="video/*" onChange={handleFileChange} hidden disabled={isBusy} />
+          {(status === 'idle' || status === 'ready' || status === 'error') && '+ Subir video o audio'}
+          <input
+            type="file"
+            accept="video/*,audio/*"
+            onChange={handleFileChange}
+            hidden
+            disabled={isBusy}
+          />
         </label>
       </header>
 
@@ -70,31 +80,54 @@ function App() {
           <div className="video-frame">
             {videoId ? (
               <div className="video-stage">
-                <video
-                  ref={videoRef}
-                  className="video-preview"
-                  src={videoFileUrl(videoId)}
-                  controls
-                  onTimeUpdate={(e) => setCurrentTime(e.currentTarget.currentTime)}
-                />
+                {isAudio ? (
+                  <div className="audio-stage">
+                    <div className="audio-art">🎵</div>
+                    <audio
+                      ref={mediaRef as React.RefObject<HTMLAudioElement>}
+                      className="audio-preview"
+                      src={videoFileUrl(videoId)}
+                      controls
+                      onTimeUpdate={(e) => setCurrentTime(e.currentTarget.currentTime)}
+                      onLoadedMetadata={(e) => setDuration(e.currentTarget.duration)}
+                    />
+                  </div>
+                ) : (
+                  <video
+                    ref={mediaRef as React.RefObject<HTMLVideoElement>}
+                    className="video-preview"
+                    src={videoFileUrl(videoId)}
+                    controls
+                    onTimeUpdate={(e) => setCurrentTime(e.currentTarget.currentTime)}
+                    onLoadedMetadata={(e) => setDuration(e.currentTarget.duration)}
+                  />
+                )}
                 <CaptionOverlay segments={segments} currentTime={currentTime} />
               </div>
             ) : (
               <div className="video-placeholder">
                 <div className="video-placeholder-icon">▶</div>
-                <p>Sube un video para empezar a editar</p>
+                <p>Sube un video o audio para empezar a editar</p>
               </div>
             )}
 
             {isBusy && (
               <div className="video-overlay-status">
                 <span className="spinner" />
-                {status === 'uploading' ? 'Subiendo video...' : 'Transcribiendo audio...'}
+                {status === 'uploading' ? 'Subiendo...' : 'Detectando voz y generando subtitulos...'}
               </div>
             )}
           </div>
 
           {status === 'error' && <p className="status-msg error">{errorMessage}</p>}
+
+          <TrackTimeline
+            segments={segments}
+            duration={duration}
+            currentTime={currentTime}
+            onSeek={handleSeek}
+            isAudio={isAudio}
+          />
         </section>
 
         <aside className="subtitle-panel">

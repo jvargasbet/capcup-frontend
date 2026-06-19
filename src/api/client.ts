@@ -15,6 +15,7 @@ export interface TranscriptResponse {
 export interface UploadResponse {
   video_id: string
   filename: string
+  is_audio: boolean
 }
 
 export async function uploadVideo(file: File): Promise<UploadResponse> {
