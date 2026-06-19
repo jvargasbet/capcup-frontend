@@ -1,6 +1,6 @@
 import { useRef, useState } from 'react'
 import './App.css'
-import { transcribeVideo, updateTranscriptSegment, uploadVideo, videoFileUrl } from './api/client'
+import { exportVideo, transcribeVideo, updateTranscriptSegment, uploadVideo, videoFileUrl } from './api/client'
 import type { TranscriptSegment } from './api/client'
 import SubtitleTimeline from './components/SubtitleTimeline'
 import CaptionOverlay from './components/CaptionOverlay'
@@ -16,6 +16,7 @@ function App() {
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
   const [currentTime, setCurrentTime] = useState(0)
   const [duration, setDuration] = useState(0)
+  const [isExporting, setIsExporting] = useState(false)
   const mediaRef = useRef<HTMLVideoElement | HTMLAudioElement>(null)
 
   async function handleFileChange(event: React.ChangeEvent<HTMLInputElement>) {
@@ -58,6 +59,25 @@ function App() {
     }
   }
 
+  async function handleExport() {
+    if (!videoId) return
+    setIsExporting(true)
+    setErrorMessage(null)
+    try {
+      const blob = await exportVideo(videoId)
+      const url = URL.createObjectURL(blob)
+      const link = document.createElement('a')
+      link.href = url
+      link.download = `${videoId}_export.mp4`
+      link.click()
+      URL.revokeObjectURL(url)
+    } catch (error) {
+      setErrorMessage(error instanceof Error ? error.message : 'Error al exportar el video')
+    } finally {
+      setIsExporting(false)
+    }
+  }
+
   const isBusy = status === 'uploading' || status === 'transcribing'
 
   return (
@@ -71,18 +91,31 @@ function App() {
           </div>
         </div>
 
-        <label className={`upload-button ${isBusy ? 'is-disabled' : ''}`}>
-          {status === 'uploading' && 'Subiendo...'}
-          {status === 'transcribing' && 'Transcribiendo...'}
-          {(status === 'idle' || status === 'ready' || status === 'error') && '+ Subir video o audio'}
-          <input
-            type="file"
-            accept="video/*,audio/*"
-            onChange={handleFileChange}
-            hidden
-            disabled={isBusy}
-          />
-        </label>
+        <div className="header-actions">
+          {status === 'ready' && segments.length > 0 && (
+            <button
+              type="button"
+              className={`export-button ${isExporting ? 'is-disabled' : ''}`}
+              onClick={handleExport}
+              disabled={isExporting}
+            >
+              {isExporting ? 'Exportando...' : '⬇ Exportar con subtitulos'}
+            </button>
+          )}
+
+          <label className={`upload-button ${isBusy ? 'is-disabled' : ''}`}>
+            {status === 'uploading' && 'Subiendo...'}
+            {status === 'transcribing' && 'Transcribiendo...'}
+            {(status === 'idle' || status === 'ready' || status === 'error') && '+ Subir video o audio'}
+            <input
+              type="file"
+              accept="video/*,audio/*"
+              onChange={handleFileChange}
+              hidden
+              disabled={isBusy}
+            />
+          </label>
+        </div>
       </header>
 
       <main className="editor-main">

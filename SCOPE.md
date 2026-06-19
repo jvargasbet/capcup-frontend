@@ -91,7 +91,7 @@ Fuentes consultadas:
 | Texto manual personalizable (mas alla de subtitulos auto) | No | Medio |
 | Estilos predefinidos de subtitulos (burbujas, etc.) | Parcial (1 estilo automatico) | Bajo-medio — agregar variantes |
 | Exportar `.srt` | No | Bajo |
-| Exportar video con subtitulos quemados | No | Medio (ffmpeg, ya en backlog) |
+| Exportar video con subtitulos quemados | Si | Medio (ffmpeg, ya en backlog) |
 | AI Auto-Edit (descripcion -> edicion automatica) | No | Alto — requiere LLM + logica de seleccion de clips |
 | Script-to-Video | No | Alto — fuera de alcance, es un producto distinto |
 | Voz en off por IA (TTS) | No | Medio (integrar un servicio TTS) |
@@ -106,7 +106,7 @@ Fuentes consultadas:
 CapCup hoy cubre bien el **nicho de subtitulado automatico con estilo IA** (que es justamente el feature mas usado/valorado de CapCut, "Auto Captions"). Replicar el editor completo de CapCut (multi-clip, transiciones, efectos, chroma key, etc.) es un proyecto de meses con un equipo, no una iteracion mas.
 
 Ruta sugerida, en orden de impacto vs. esfuerzo:
-1. Exportar video con subtitulos quemados (cierra el ciclo: subir -> editar -> descargar listo para publicar).
+1. ~~Exportar video con subtitulos quemados (cierra el ciclo: subir -> editar -> descargar listo para publicar).~~ Hecho.
 2. Multi-clip basico (subir varios archivos, ordenarlos, transcripcion combinada).
 3. Split/trim de clips en el timeline.
 4. Exportar `.srt` (rapido, alto valor para creadores que editan en otra herramienta).

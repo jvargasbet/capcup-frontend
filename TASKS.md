@@ -7,7 +7,7 @@ Estado actual: React + Vite + TypeScript. Sube video/audio, muestra transcripcio
 - [ ] **Edicion de subtitulos**: permitir click en un segmento de la transcripcion y editar el texto/tiempos directamente desde el panel, llamando al `PATCH /videos/{id}/transcript` del backend (ver TASKS.md del backend).
 - [ ] **Estado de progreso real**: hoy el spinner es generico ("Detectando voz..."). Si el backend agrega progreso (websocket o polling), mostrar barra de progreso real.
 - [ ] **Manejo de archivos grandes**: agregar validacion de tamano en el input antes de subir (evitar que el usuario espere un upload que el backend va a rechazar).
-- [ ] **Exportar video final**: boton "Exportar" que llame al endpoint de export del backend y descargue el video con subtitulos quemados.
+- [x] **Exportar video final**: boton "Exportar" que llame al endpoint de export del backend y descargue el video con subtitulos quemados.
 - [ ] **Persistir el proyecto entre recargas**: si el usuario refresca la pagina pierde el video cargado. Guardar `video_id` en localStorage y permitir recuperarlo.
 
 ## Prioridad media

@@ -67,3 +67,13 @@ export async function updateTranscriptSegment(
   }
   return res.json()
 }
+
+export async function exportVideo(videoId: string): Promise<Blob> {
+  const res = await fetch(`${API_BASE_URL}/videos/${videoId}/export`, {
+    method: 'POST',
+  })
+  if (!res.ok) {
+    throw new Error(`Error al exportar el video: ${res.status}`)
+  }
+  return res.blob()
+}

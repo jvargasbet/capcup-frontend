@@ -55,6 +55,35 @@ body {
   font-size: 0.8rem;
 }
 
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.export-button {
+  padding: 0.6rem 1.3rem;
+  background: #181b24;
+  border: 1px solid #2a2d36;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: #f1f1f1;
+  transition: opacity 0.15s ease, transform 0.15s ease;
+}
+
+.export-button:hover {
+  transform: translateY(-1px);
+  border-color: #6366f1;
+}
+
+.export-button.is-disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+  transform: none;
+}
+
 .upload-button {
   padding: 0.6rem 1.3rem;
   background: linear-gradient(135deg, #6366f1, #4f46e5);
