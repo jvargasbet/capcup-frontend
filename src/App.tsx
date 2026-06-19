@@ -44,42 +44,65 @@ function App() {
     }
   }
 
+  const isBusy = status === 'uploading' || status === 'transcribing'
+
   return (
     <div className="editor-layout">
       <header className="editor-header">
-        <h1>CapCup</h1>
-        <p>Editor de video con deteccion de audio y subtitulos automaticos</p>
+        <div className="brand">
+          <span className="brand-mark">CC</span>
+          <div>
+            <h1>CapCup</h1>
+            <p>Editor de video con subtitulos automaticos</p>
+          </div>
+        </div>
+
+        <label className={`upload-button ${isBusy ? 'is-disabled' : ''}`}>
+          {status === 'uploading' && 'Subiendo...'}
+          {status === 'transcribing' && 'Transcribiendo...'}
+          {(status === 'idle' || status === 'ready' || status === 'error') && '+ Subir video'}
+          <input type="file" accept="video/*" onChange={handleFileChange} hidden disabled={isBusy} />
+        </label>
       </header>
 
       <main className="editor-main">
         <section className="preview-panel">
-          <label className="upload-button">
-            Subir video
-            <input type="file" accept="video/*" onChange={handleFileChange} hidden />
-          </label>
+          <div className="video-frame">
+            {videoId ? (
+              <div className="video-stage">
+                <video
+                  ref={videoRef}
+                  className="video-preview"
+                  src={videoFileUrl(videoId)}
+                  controls
+                  onTimeUpdate={(e) => setCurrentTime(e.currentTarget.currentTime)}
+                />
+                <CaptionOverlay segments={segments} currentTime={currentTime} />
+              </div>
+            ) : (
+              <div className="video-placeholder">
+                <div className="video-placeholder-icon">▶</div>
+                <p>Sube un video para empezar a editar</p>
+              </div>
+            )}
 
-          {status === 'uploading' && <p className="status-msg">Subiendo video...</p>}
-          {status === 'transcribing' && <p className="status-msg">Transcribiendo audio...</p>}
+            {isBusy && (
+              <div className="video-overlay-status">
+                <span className="spinner" />
+                {status === 'uploading' ? 'Subiendo video...' : 'Transcribiendo audio...'}
+              </div>
+            )}
+          </div>
+
           {status === 'error' && <p className="status-msg error">{errorMessage}</p>}
-
-          {videoId && (
-            <div className="video-stage">
-              <video
-                ref={videoRef}
-                className="video-preview"
-                src={videoFileUrl(videoId)}
-                controls
-                onTimeUpdate={(e) => setCurrentTime(e.currentTarget.currentTime)}
-              />
-              <CaptionOverlay segments={segments} currentTime={currentTime} />
-            </div>
-          )}
         </section>
 
-        <section className="subtitle-panel">
+        <aside className="subtitle-panel">
           <h2>Transcripcion</h2>
-          <SubtitleTimeline segments={segments} currentTime={currentTime} onSeek={handleSeek} />
-        </section>
+          <div className="subtitle-panel-body">
+            <SubtitleTimeline segments={segments} currentTime={currentTime} onSeek={handleSeek} />
+          </div>
+        </aside>
       </main>
     </div>
   )
