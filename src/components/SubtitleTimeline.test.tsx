@@ -31,4 +31,44 @@ describe('SubtitleTimeline', () => {
     fireEvent.click(screen.getByText('bienvenidos al editor'))
     expect(onSeek).toHaveBeenCalledWith(1.5)
   })
+
+  it('enters edit mode on double click and commits the new text on blur', () => {
+    const onEditText = vi.fn()
+    render(
+      <SubtitleTimeline segments={segments} currentTime={0} onSeek={() => {}} onEditText={onEditText} />
+    )
+
+    fireEvent.doubleClick(screen.getByText('Hola a todos'))
+    const input = screen.getByDisplayValue('Hola a todos')
+    fireEvent.change(input, { target: { value: 'Hola a todas' } })
+    fireEvent.blur(input)
+
+    expect(onEditText).toHaveBeenCalledWith(0, 'Hola a todas')
+  })
+
+  it('commits the edit on Enter key', () => {
+    const onEditText = vi.fn()
+    render(
+      <SubtitleTimeline segments={segments} currentTime={0} onSeek={() => {}} onEditText={onEditText} />
+    )
+
+    fireEvent.doubleClick(screen.getByText('Hola a todos'))
+    const input = screen.getByDisplayValue('Hola a todos')
+    fireEvent.change(input, { target: { value: 'Texto editado' } })
+    fireEvent.keyDown(input, { key: 'Enter' })
+
+    expect(onEditText).toHaveBeenCalledWith(0, 'Texto editado')
+  })
+
+  it('does not call onEditText if the text is unchanged', () => {
+    const onEditText = vi.fn()
+    render(
+      <SubtitleTimeline segments={segments} currentTime={0} onSeek={() => {}} onEditText={onEditText} />
+    )
+
+    fireEvent.doubleClick(screen.getByText('Hola a todos'))
+    fireEvent.blur(screen.getByDisplayValue('Hola a todos'))
+
+    expect(onEditText).not.toHaveBeenCalled()
+  })
 })

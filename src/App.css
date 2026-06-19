@@ -336,12 +336,29 @@ body {
 }
 
 .subtitle-panel h2 {
-  margin: 0 0 0.75rem;
+  margin: 0 0 0.25rem;
   font-size: 0.95rem;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.04em;
   color: #c8c9d4;
+}
+
+.subtitle-hint {
+  margin: 0 0 0.75rem;
+  font-size: 0.72rem;
+  color: #6b6e79;
+}
+
+.subtitle-edit-input {
+  flex: 1;
+  background: #0b0c10;
+  border: 1px solid #6366f1;
+  border-radius: 6px;
+  color: #f1f1f1;
+  font-size: 0.92rem;
+  padding: 0.3rem 0.5rem;
+  font-family: inherit;
 }
 
 .subtitle-panel-body {

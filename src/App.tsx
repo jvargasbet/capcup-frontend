@@ -1,6 +1,6 @@
 import { useRef, useState } from 'react'
 import './App.css'
-import { transcribeVideo, uploadVideo, videoFileUrl } from './api/client'
+import { transcribeVideo, updateTranscriptSegment, uploadVideo, videoFileUrl } from './api/client'
 import type { TranscriptSegment } from './api/client'
 import SubtitleTimeline from './components/SubtitleTimeline'
 import CaptionOverlay from './components/CaptionOverlay'
@@ -45,6 +45,16 @@ function App() {
     if (mediaRef.current) {
       mediaRef.current.currentTime = time
       mediaRef.current.play()
+    }
+  }
+
+  async function handleEditText(index: number, text: string) {
+    if (!videoId) return
+    try {
+      const updated = await updateTranscriptSegment(videoId, index, { text })
+      setSegments(updated.segments)
+    } catch (error) {
+      setErrorMessage(error instanceof Error ? error.message : 'Error al editar el subtitulo')
     }
   }
 
@@ -132,8 +142,14 @@ function App() {
 
         <aside className="subtitle-panel">
           <h2>Transcripcion</h2>
+          <p className="subtitle-hint">Doble click en un texto para editarlo</p>
           <div className="subtitle-panel-body">
-            <SubtitleTimeline segments={segments} currentTime={currentTime} onSeek={handleSeek} />
+            <SubtitleTimeline
+              segments={segments}
+              currentTime={currentTime}
+              onSeek={handleSeek}
+              onEditText={handleEditText}
+            />
           </div>
         </aside>
       </main>

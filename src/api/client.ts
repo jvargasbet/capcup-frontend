@@ -45,3 +45,25 @@ export async function transcribeVideo(videoId: string): Promise<TranscriptRespon
 export function videoFileUrl(videoId: string): string {
   return `${API_BASE_URL}/videos/${videoId}/file`
 }
+
+export interface SegmentUpdate {
+  text?: string
+  start?: number
+  end?: number
+}
+
+export async function updateTranscriptSegment(
+  videoId: string,
+  segmentIndex: number,
+  update: SegmentUpdate
+): Promise<TranscriptResponse> {
+  const res = await fetch(`${API_BASE_URL}/videos/${videoId}/transcript/${segmentIndex}`, {
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(update),
+  })
+  if (!res.ok) {
+    throw new Error(`Error al editar el subtitulo: ${res.status}`)
+  }
+  return res.json()
+}
